@@ -1,0 +1,6 @@
+[source.crates-io]
+replace-with = "debian-registry"
+local-registry = "/nonexistent"
+
+[source.debian-registry]
+directory = "/usr/share/cargo/registry"

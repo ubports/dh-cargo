@@ -1,0 +1,5 @@
+dh-cargo (1) unstable; urgency=medium
+
+  * Initial Release.
+
+ -- Josh Triplett <josh@joshtriplett.org>  Mon, 21 Nov 2016 06:24:51 -0800
