@@ -43,7 +43,7 @@ sub pre_building_step {
     foreach my $package (@packages) {
         if ($package->{Package} =~ /^librust-.*-dev$/ && $package->{Architecture} eq 'all') {
             $this->{libpkg} = $package->{Package};
-        } elsif ($package->{Architecture} eq 'any') {
+        } elsif ($package->{Architecture} ne 'all') {
             $this->{binpkg} = $package->{Package};
         }
     }
