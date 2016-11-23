@@ -95,7 +95,9 @@ sub install {
         doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$target/$crate_name/.cargo-checksum.json");
     }
     if ($this->{binpkg}) {
-        doit("cargo", "install", "--root", $this->get_sourcepath("debian/" . $this->{binpkg}));
+        my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
+        doit("cargo", "install", "--root", $target);
+        doit("rm", "$target/.crates.toml");
     }
 }
 
