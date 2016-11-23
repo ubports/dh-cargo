@@ -1,2 +1,1 @@
 cargo.pm /usr/share/perl5/Debian/Debhelper/Buildsystem/
-config /usr/share/cargo/

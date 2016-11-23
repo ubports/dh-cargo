@@ -1,5 +1,0 @@
-[source.crates-io]
-replace-with = "debian-registry"
-
-[source.debian-registry]
-directory = "/usr/share/cargo/registry"
