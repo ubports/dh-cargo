@@ -55,8 +55,16 @@ sub pre_building_step {
     my @packages = $control->get_packages();
     $this->{libpkg} = 0;
     $this->{binpkg} = 0;
+    $this->{featurepkg} = [];
     foreach my $package (@packages) {
         if ($package->{Package} =~ /^librust-.*-dev$/ && $package->{Architecture} eq 'all') {
+            if ($package->{Package} =~ /\+/) {
+                push(@{$this->{featurepkg}}, $package->{Package});
+                next;
+            }
+            if ($this->{libpkg}) {
+                error("Multiple Cargo lib packages found: " . $this->{libpkg} . " and " . $package->{Package});
+            }
             $this->{libpkg} = $package->{Package};
         } elsif ($package->{Architecture} ne 'all') {
             $this->{binpkg} = $package->{Package};
@@ -64,6 +72,9 @@ sub pre_building_step {
     }
     if (!$this->{libpkg} && !$this->{binpkg}) {
         error("Could not find any Cargo lib or bin packages to build.");
+    }
+    if (@{$this->{featurepkg}} && !$this->{libpkg}) {
+        error("Found feature packages but no lib package.");
     }
 
     my $parallel = $this->get_parallel();
@@ -93,6 +104,11 @@ sub install {
         doit("mkdir", "-p", $target);
         doit("cp", "-at", $target, @sources);
         doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$target/.cargo-checksum.json");
+    }
+    foreach my $pkg (@{$this->{featurepkg}}) {
+        my $target = $this->get_sourcepath("debian/$pkg/usr/share/doc");
+        doit("mkdir", "-p", $target);
+        doit("ln", "-s", $this->{libpkg}, "$target/$pkg");
     }
     if ($this->{binpkg}) {
         my $registry = $this->{cargo_registry};
