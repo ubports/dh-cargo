@@ -1,4 +1,4 @@
-dh-cargo (1) unstable; urgency=medium
+dh-cargo (1) experimental; urgency=medium
 
   * Initial Release.
 
