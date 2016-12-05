@@ -46,6 +46,7 @@ sub pre_building_step {
     if (!$crate) {
         $crate = $source->{Source};
         $crate =~ s/^rust-//;
+        $crate =~ s/-[0-9]+(\.[0-9]+)*$//;
     }
     $this->{crate} = $crate;
     my $changelog = Dpkg::Changelog::Debian->new(range => { count => 1 });
