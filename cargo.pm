@@ -142,7 +142,7 @@ directory = "$registry"
         $ENV{'CARGO_HOME'} = $this->{cargo_home};
 
         my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
-        doit("cargo", "install", $this->{crate}, "--vers", $this->{version}, "--root", $target, @{$this->{j}});
+        doit("cargo", "install", $this->{crate}, "--verbose", "--vers", $this->{version}, "--root", $target, @{$this->{j}});
         doit("rm", "$target/.crates.toml");
     }
 }
