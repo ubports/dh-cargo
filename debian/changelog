@@ -1,8 +1,12 @@
-dh-cargo (2) UNRELEASED; urgency=medium
+dh-cargo (2) unstable; urgency=medium
 
+  [ Josh Triplett ]
   * Update package description with additional documentation.
 
- -- Josh Triplett <josh@joshtriplett.org>  Fri, 23 Dec 2016 23:06:17 -0800
+  [ Ximin Luo ]
+  * Upload to unstable.
+
+ -- Ximin Luo <infinity0@debian.org>  Sat, 10 Jun 2017 22:33:08 +0200
 
 dh-cargo (1) experimental; urgency=medium
 
