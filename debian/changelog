@@ -1,6 +1,9 @@
 dh-cargo (3) UNRELEASED; urgency=medium
 
   * Update to latest Standards-Version; no changes required.
+  * Run `cargo build` during dh_auto_test to check that each library package
+    actually builds, e.g. to ensure that any non-rust system dependencies were
+    correctly expressed.
 
  -- Ximin Luo <infinity0@debian.org>  Tue, 06 Feb 2018 02:34:08 +0100
 

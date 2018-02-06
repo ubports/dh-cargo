@@ -94,16 +94,56 @@ sub get_sources {
 
 sub configure {
     my $this=shift;
+    # Create a fake local registry $this->{cargo_registry} with only our dependencies
+    my $crate = $this->{crate} . '-' . $this->{version};
+    my $registry = $this->{cargo_registry};
+    doit("mkdir", "-p", $this->{cargo_home}, $registry);
+    opendir(my $dirhandle, '/usr/share/cargo/registry');
+    my @crates = map { "/usr/share/cargo/registry/$_" } grep { $_ ne '.' && $_ ne '..' } readdir($dirhandle);
+    closedir($dirhandle);
+    if (@crates) {
+        doit("ln", "-st", "$registry", @crates);
+    }
+    # Handle the case of building the package with the same version of the
+    # package installed.
+    if (-l "$registry/$crate") {
+        unlink("$registry/$crate");
+    }
+    mkdir("$registry/$crate");
+    my @sources = $this->get_sources();
+    doit("cp", "-at", "$registry/$crate", @sources);
+    doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$registry/$crate/.cargo-checksum.json");
+
+    open(CONFIG, ">" . $this->{cargo_home} . "/config");
+    print(CONFIG qq{
+[source.crates-io]
+replace-with = "dh-cargo-registry"
+
+[source.dh-cargo-registry]
+directory = "$registry"
+});
+    close(CONFIG);
+}
+
+sub test {
+    my $this=shift;
+    $ENV{'CARGO_HOME'} = $this->{cargo_home};
+    # Check that the thing compiles. This might fail if e.g. the package
+    # requires non-rust system dependencies and the maintainer didn't provide
+    # this additional information to debcargo.
+    doit("cargo", "build", "--verbose", "--avoid-dev-deps");
 }
 
 sub install {
     my $this=shift;
+    $ENV{'CARGO_HOME'} = $this->{cargo_home};
     my $crate = $this->{crate} . '-' . $this->{version};
     if ($this->{libpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{libpkg} . "/usr/share/cargo/registry/$crate");
         my @sources = $this->get_sources();
         doit("mkdir", "-p", $target);
         doit("cp", "-at", $target, @sources);
+        doit("rm", "-rf", "$target/target");
         doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$target/.cargo-checksum.json");
     }
     foreach my $pkg (@{$this->{featurepkg}}) {
@@ -112,35 +152,6 @@ sub install {
         doit("ln", "-s", $this->{libpkg}, "$target/$pkg");
     }
     if ($this->{binpkg}) {
-        my $registry = $this->{cargo_registry};
-        doit("mkdir", "-p", $this->{cargo_home}, $registry);
-        opendir(my $dirhandle, '/usr/share/cargo/registry');
-        my @crates = map { "/usr/share/cargo/registry/$_" } grep { $_ ne '.' && $_ ne '..' } readdir($dirhandle);
-        closedir($dirhandle);
-        if (@crates) {
-            doit("ln", "-st", "$registry", @crates);
-        }
-        # Handle the case of building the package with the same version of the
-        # package installed.
-        if (-l "$registry/$crate") {
-            unlink("$registry/$crate");
-        }
-        mkdir("$registry/$crate");
-        my @sources = $this->get_sources();
-        doit("cp", "-at", "$registry/$crate", @sources);
-        doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$registry/$crate/.cargo-checksum.json");
-
-        open(CONFIG, ">" . $this->{cargo_home} . "/config");
-        print(CONFIG qq{
-[source.crates-io]
-replace-with = "dh-cargo-registry"
-
-[source.dh-cargo-registry]
-directory = "$registry"
-});
-        close(CONFIG);
-        $ENV{'CARGO_HOME'} = $this->{cargo_home};
-
         my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
         doit("cargo", "install", $this->{crate}, "--verbose", "--vers", $this->{version}, "--root", $target, @{$this->{j}});
         doit("rm", "$target/.crates.toml");
