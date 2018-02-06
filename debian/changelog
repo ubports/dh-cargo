@@ -1,3 +1,9 @@
+dh-cargo (3) UNRELEASED; urgency=medium
+
+  * Update to latest Standards-Version; no changes required.
+
+ -- Ximin Luo <infinity0@debian.org>  Tue, 06 Feb 2018 02:34:08 +0100
+
 dh-cargo (2) unstable; urgency=medium
 
   [ Josh Triplett ]
