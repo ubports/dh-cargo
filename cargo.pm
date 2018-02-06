@@ -160,6 +160,8 @@ sub install {
 
 sub clean {
     my $this=shift;
+    $ENV{'CARGO_HOME'} = $this->{cargo_home};
+    doit("cargo", "clean", "--verbose");
     doit("rm", "-rf", $this->{cargo_home}, $this->{cargo_registry});
 }
 
