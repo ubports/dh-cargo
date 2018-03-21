@@ -10,7 +10,7 @@ Vcs-Browser: https://anonscm.debian.org/cgit/pkg-rust/dh-cargo.git
 
 Package: dh-cargo
 Architecture: all
-Depends: cargo (>= 0.24.0-2), debhelper (>= 10), ${perl:Depends}, ${misc:Depends}
+Depends: cargo (>= 0.25.0-2), debhelper (>= 10), ${perl:Depends}, ${misc:Depends}
 Description: debhelper buildsystem for Rust crates using Cargo
  dh-cargo provides a debhelper buildsystem to build Rust crates using Cargo.
  .
