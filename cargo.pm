@@ -131,7 +131,7 @@ sub test {
     # Check that the thing compiles. This might fail if e.g. the package
     # requires non-rust system dependencies and the maintainer didn't provide
     # this additional information to debcargo.
-    doit("cargo", "build", "--verbose", "--avoid-dev-deps");
+    doit("cargo", "build", "--verbose", "-Zavoid-dev-deps");
 }
 
 sub install {
