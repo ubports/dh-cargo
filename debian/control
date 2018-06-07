@@ -10,6 +10,7 @@ Vcs-Browser: https://salsa.debian.org/rust-team/dh-cargo
 
 Package: dh-cargo
 Architecture: all
+Multi-Arch: foreign
 Depends: cargo (>= 0.25.0-2), debhelper (>= 10), ${perl:Depends}, ${misc:Depends}
 Description: debhelper buildsystem for Rust crates using Cargo
  dh-cargo provides a debhelper buildsystem to build Rust crates using Cargo.
