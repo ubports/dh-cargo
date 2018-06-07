@@ -187,6 +187,7 @@ sub install {
     if ($this->{binpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
         doit("cargo", "install", "--verbose", @{$this->{j}},
+            "--target", deb_host_rust_type,
             $this->{crate},
             "--vers", cargo_version($this->get_sourcepath("Cargo.toml")),
             "--root", $target);
