@@ -2,6 +2,7 @@ dh-cargo (4) UNRELEASED; urgency=medium
 
   * Pass cargo-version not Debian-version to `cargo install`.
   * Pass debuginfo=2 and LDFLAGS when building.
+  * Add other flags to support cross-compiling.
 
  -- Ximin Luo <infinity0@debian.org>  Wed, 06 Jun 2018 19:50:22 -0700
 

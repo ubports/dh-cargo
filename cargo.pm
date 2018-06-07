@@ -27,6 +27,16 @@ sub cargo_version {
     return %{@{%{$manifest}{'packages'}}[0]}{'version'} . "\n";
 }
 
+sub deb_host_rust_type {
+    open(F, 'printf "include /usr/share/rustc/architecture.mk\n\
+all:\n\
+	echo \$(DEB_HOST_RUST_TYPE)\n\
+" | make -sf - |');
+    $_ = <F>;
+    chomp;
+    return $_;
+}
+
 sub check_auto_buildable {
     my $this = shift;
     if (-f $this->get_sourcepath("Cargo.toml")) {
@@ -126,7 +136,10 @@ sub configure {
 
     my @ldflags = split / /, $ENV{'LDFLAGS'};
     @ldflags = map { "\"-C\", \"link-arg=$_\"" } @ldflags;
-    my $rustflags_toml = join(", ", '"-C"', '"debuginfo=2"', @ldflags);
+    my $rustflags_toml = join(", ",
+        '"-C"', '"linker=' . dpkg_architecture_value("DEB_HOST_GNU_TYPE") . '-gcc"',
+        '"-C"', '"debuginfo=2"',
+        @ldflags);
     open(CONFIG, ">" . $this->{cargo_home} . "/config");
     print(CONFIG qq{
 [source.crates-io]
@@ -147,7 +160,9 @@ sub test {
     # Check that the thing compiles. This might fail if e.g. the package
     # requires non-rust system dependencies and the maintainer didn't provide
     # this additional information to debcargo.
-    doit("cargo", "build", "--verbose", "-Zavoid-dev-deps");
+    doit("cargo", "build", "--verbose", @{$this->{j}},
+        "--target", deb_host_rust_type,
+        "-Zavoid-dev-deps");
 }
 
 sub install {
@@ -169,7 +184,8 @@ sub install {
     }
     if ($this->{binpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
-        doit("cargo", "install", $this->{crate}, "--verbose", @{$this->{j}},
+        doit("cargo", "install", "--verbose", @{$this->{j}},
+            $this->{crate},
             "--vers", cargo_version($this->get_sourcepath("Cargo.toml")),
             "--root", $target);
         doit("rm", "$target/.crates.toml");
