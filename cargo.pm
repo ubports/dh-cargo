@@ -136,6 +136,8 @@ sub configure {
 
     my @ldflags = split / /, $ENV{'LDFLAGS'};
     @ldflags = map { "\"-C\", \"link-arg=$_\"" } @ldflags;
+    # We manually supply the linker to support cross-compilation
+    # This is because of https://github.com/rust-lang/cargo/issues/4133
     my $rustflags_toml = join(", ",
         '"-C"', '"linker=' . dpkg_architecture_value("DEB_HOST_GNU_TYPE") . '-gcc"',
         '"-C"', '"debuginfo=2"',
