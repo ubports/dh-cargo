@@ -124,6 +124,9 @@ sub configure {
     doit("cp", "-at", "$registry/$crate", @sources);
     doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$registry/$crate/.cargo-checksum.json");
 
+    my @ldflags = split / /, $ENV{'LDFLAGS'};
+    @ldflags = map { "\"-C\", \"link-arg=$_\"" } @ldflags;
+    my $rustflags_toml = join(", ", '"-C"', '"debuginfo=2"', @ldflags);
     open(CONFIG, ">" . $this->{cargo_home} . "/config");
     print(CONFIG qq{
 [source.crates-io]
@@ -131,6 +134,9 @@ replace-with = "dh-cargo-registry"
 
 [source.dh-cargo-registry]
 directory = "$registry"
+
+[build]
+rustflags = [$rustflags_toml]
 });
     close(CONFIG);
 }
