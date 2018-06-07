@@ -24,7 +24,7 @@ sub cargo_version {
     local $/;
     my $json = JSON::PP->new;
     my $manifest = $json->decode(<F>);
-    return %{@{%{$manifest}{'packages'}}[0]}{'version'} . "\n";
+    return %{@{%{$manifest}{'packages'}}[0]}{'version'} . "";
 }
 
 sub deb_host_rust_type {
