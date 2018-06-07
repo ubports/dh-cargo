@@ -11,10 +11,20 @@ use Debian::Debhelper::Dh_Lib;
 use Dpkg::Changelog::Debian;
 use Dpkg::Control::Info;
 use Dpkg::Version;
+use JSON::PP;
 use base 'Debian::Debhelper::Buildsystem';
 
 sub DESCRIPTION {
     "Rust Cargo"
+}
+
+sub cargo_version {
+    my $src = shift;
+    open(F, "cargo metadata --manifest-path $src --no-deps --format-version 1 |");
+    local $/;
+    my $json = JSON::PP->new;
+    my $manifest = $json->decode(<F>);
+    return %{@{%{$manifest}{'packages'}}[0]}{'version'} . "\n";
 }
 
 sub check_auto_buildable {
@@ -153,7 +163,9 @@ sub install {
     }
     if ($this->{binpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
-        doit("cargo", "install", $this->{crate}, "--verbose", "--vers", $this->{version}, "--root", $target, @{$this->{j}});
+        doit("cargo", "install", $this->{crate}, "--verbose", @{$this->{j}},
+            "--vers", cargo_version($this->get_sourcepath("Cargo.toml")),
+            "--root", $target);
         doit("rm", "$target/.crates.toml");
     }
 }

@@ -1,3 +1,9 @@
+dh-cargo (4) UNRELEASED; urgency=medium
+
+  * Pass cargo-version not Debian-version to `cargo install`.
+
+ -- Ximin Luo <infinity0@debian.org>  Wed, 06 Jun 2018 19:50:22 -0700
+
 dh-cargo (3) unstable; urgency=medium
 
   * Update to latest Standards-Version; no changes required.
