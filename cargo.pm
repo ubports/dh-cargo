@@ -31,7 +31,7 @@ sub deb_host_rust_type {
     open(F, 'printf "include /usr/share/rustc/architecture.mk\n\
 all:\n\
 	echo \$(DEB_HOST_RUST_TYPE)\n\
-" | make -sf - |');
+" | make --no-print-directory -sf - |');
     $_ = <F>;
     chomp;
     return $_;
