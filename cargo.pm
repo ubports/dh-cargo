@@ -78,7 +78,7 @@ sub pre_building_step {
     $this->{binpkg} = 0;
     $this->{featurepkg} = [];
     foreach my $package (@packages) {
-        if ($package->{Package} =~ /^librust-.*-dev$/ && $package->{Architecture} eq 'all') {
+        if ($package->{Package} =~ /^librust-.*-dev$/) {
             if ($package->{Package} =~ /\+/) {
                 push(@{$this->{featurepkg}}, $package->{Package});
                 next;
