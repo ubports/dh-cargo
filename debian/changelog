@@ -1,10 +1,10 @@
-dh-cargo (5) UNRELEASED; urgency=medium
+dh-cargo (5) unstable; urgency=medium
 
   * Pass `--cap-lints warn` in rustflags to avoid builds breaking when rustc
     adds new warnings.
   * Work around a stupid ftpmaster rule about files with old dates.
 
- -- Ximin Luo <infinity0@debian.org>  Mon, 18 Jun 2018 00:51:31 -0700
+ -- Ximin Luo <infinity0@debian.org>  Mon, 18 Jun 2018 00:58:48 -0700
 
 dh-cargo (4) unstable; urgency=medium
 
