@@ -179,6 +179,8 @@ sub install {
         doit("cp", "-at", $target, @sources);
         doit("rm", "-rf", "$target/target");
         doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$target/.cargo-checksum.json");
+        # work around some stupid ftpmaster rule about files with old dates.
+        doit("touch", "-d@" . $ENV{SOURCE_DATE_EPOCH}, "$target/Cargo.toml");
     }
     foreach my $pkg (@{$this->{featurepkg}}) {
         my $target = $this->get_sourcepath("debian/$pkg/usr/share/doc");
