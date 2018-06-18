@@ -141,6 +141,7 @@ sub configure {
     my $rustflags_toml = join(", ",
         '"-C"', '"linker=' . dpkg_architecture_value("DEB_HOST_GNU_TYPE") . '-gcc"',
         '"-C"', '"debuginfo=2"',
+        '"--cap-lints"', '"warn"',
         @ldflags);
     open(CONFIG, ">" . $this->{cargo_home} . "/config");
     print(CONFIG qq{

@@ -1,3 +1,10 @@
+dh-cargo (5) UNRELEASED; urgency=medium
+
+  * Pass `--cap-lints warn` in rustflags to avoid builds breaking when rustc
+    adds new warnings.
+
+ -- Ximin Luo <infinity0@debian.org>  Mon, 18 Jun 2018 00:51:31 -0700
+
 dh-cargo (4) unstable; urgency=medium
 
   * Pass cargo-version not Debian-version to `cargo install`.
