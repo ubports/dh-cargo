@@ -1,3 +1,10 @@
+dh-cargo (6) UNRELEASED; urgency=medium
+
+  * Don't add .pc directories to binary package, but do add debian/patches.
+    (Closes: #880689)
+
+ -- Ximin Luo <infinity0@debian.org>  Sat, 30 Jun 2018 17:14:33 -0700
+
 dh-cargo (5) unstable; urgency=medium
 
   * Pass `--cap-lints warn` in rustflags to avoid builds breaking when rustc

@@ -107,7 +107,8 @@ sub pre_building_step {
 sub get_sources {
     my $this=shift;
     opendir(my $dirhandle, $this->get_sourcedir());
-    my @sources = grep { $_ ne '.' && $_ ne '..' && $_ ne '.git' && $_ ne 'debian' } readdir($dirhandle);
+    my @sources = grep { $_ ne '.' && $_ ne '..' && $_ ne '.git' && $_ ne '.pc' && $_ ne 'debian' } readdir($dirhandle);
+    push @sources, 'debian/patches' if -d $this->get_sourcedir() . '/debian/patches';
     closedir($dirhandle);
     @sources
 }
@@ -131,7 +132,7 @@ sub configure {
     }
     mkdir("$registry/$crate");
     my @sources = $this->get_sources();
-    doit("cp", "-at", "$registry/$crate", @sources);
+    doit("cp", "--parents", "-at", "$registry/$crate", @sources);
     doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$registry/$crate/.cargo-checksum.json");
 
     my @ldflags = split / /, $ENV{'LDFLAGS'};
@@ -176,7 +177,7 @@ sub install {
         my $target = $this->get_sourcepath("debian/" . $this->{libpkg} . "/usr/share/cargo/registry/$crate");
         my @sources = $this->get_sources();
         doit("mkdir", "-p", $target);
-        doit("cp", "-at", $target, @sources);
+        doit("cp", "--parents", "-at", $target, @sources);
         doit("rm", "-rf", "$target/target");
         doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$target/.cargo-checksum.json");
         # work around some stupid ftpmaster rule about files with old dates.
