@@ -1,4 +1,4 @@
-dh-cargo (3) unstable; urgency=medium
+dh-cargo (6) unstable; urgency=medium
 
   * Update to latest Standards-Version; no changes required.
   * Run `cargo build` during dh_auto_test to check that each library package
